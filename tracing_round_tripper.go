@@ -21,6 +21,8 @@ import (
 )
 
 // TracingRoundTripper リクエスト/レスポンスのトレースログを出力するためのhttp.RoundTripper実装
+//
+// Client.Gzipがtrueの場合でも関知しないため利用者側で制御する必要がある
 type TracingRoundTripper struct {
 	// Transport 親となるhttp.RoundTripper、nilの場合http.DefaultTransportが利用される
 	Transport http.RoundTripper
