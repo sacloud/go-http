@@ -15,32 +15,39 @@
 package http
 
 import (
+	"log"
 	"net/http"
-	"sync"
-
-	"go.uber.org/ratelimit"
+	"net/http/httputil"
 )
 
-// RateLimitRoundTripper 秒間アクセス数を制限するためのhttp.RoundTripper実装
-type RateLimitRoundTripper struct {
+// TracingRoundTripper リクエスト/レスポンスのトレースログを出力するためのhttp.RoundTripper実装
+type TracingRoundTripper struct {
 	// Transport 親となるhttp.RoundTripper、nilの場合http.DefaultTransportが利用される
 	Transport http.RoundTripper
-	// RateLimitPerSec 秒あたりのリクエスト数
-	RateLimitPerSec int
-
-	once      sync.Once
-	rateLimit ratelimit.Limiter
 }
 
 // RoundTrip http.RoundTripperの実装
-func (r *RateLimitRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
-	r.once.Do(func() {
-		r.rateLimit = ratelimit.New(r.RateLimitPerSec)
-	})
+func (r *TracingRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	if r.Transport == nil {
 		r.Transport = http.DefaultTransport
 	}
 
-	r.rateLimit.Take()
-	return r.Transport.RoundTrip(req)
+	data, err := httputil.DumpRequest(req, true)
+	if err != nil {
+		return nil, err
+	}
+	log.Printf("[TRACE] \trequest: %s %s\n==============================\n%s\n============================\n", req.Method, req.URL.String(), string(data))
+
+	res, err := r.Transport.RoundTrip(req)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err = httputil.DumpResponse(res, true)
+	if err != nil {
+		return nil, err
+	}
+	log.Printf("[TRACE] \tresponse: %s %s\n==============================\n%s\n============================\n", req.Method, req.URL.String(), string(data))
+
+	return res, err
 }
