@@ -35,9 +35,6 @@ const (
 )
 
 var (
-	// DefaultTimeoutDuration デフォルトのタイムアウト
-	DefaultTimeoutDuration = 20 * time.Minute
-
 	// DefaultUserAgent デフォルトのユーザーエージェント
 	DefaultUserAgent = fmt.Sprintf(
 		"sacloud/go-http v%s (%s/%s; +https://github.com/sacloud/go-http)",
@@ -101,6 +98,8 @@ type Client struct {
 	RetryWaitMax time.Duration
 	// APIコール時に利用される*http.Client 未指定の場合http.DefaultClientが利用される
 	HTTPClient *http.Client
+	// RequestCustomizer リクエスト前に*http.Requestのカスタマイズを行うためのfunc
+	RequestCustomizer RequestCustomizer
 }
 
 // NewClient APIクライアント作成
@@ -158,15 +157,8 @@ func (c *Client) httpClient() *retryablehttp.Client {
 }
 
 // Do APIコール実施
-func (c *Client) Do(request *http.Request) (*http.Response, error) {
+func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	c.init()
-
-	req, err := retryablehttp.FromRequest(request)
-	if err != nil {
-		return nil, err
-	}
-
-	client := c.httpClient()
 
 	// set headers
 	req.SetBasicAuth(c.AccessToken, c.AccessTokenSecret)
@@ -189,8 +181,22 @@ func (c *Client) Do(request *http.Request) (*http.Response, error) {
 		req.Header.Add("Accept-Language", c.AcceptLanguage)
 	}
 
+	if c.RequestCustomizer != nil {
+		if err := c.RequestCustomizer(req); err != nil {
+			return nil, err
+		}
+
+	}
+
+	request, err := retryablehttp.FromRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	client := c.httpClient()
+
 	// API call
-	resp, err := client.Do(req)
+	resp, err := client.Do(request)
 	if err != nil {
 		return nil, err
 	}
