@@ -207,3 +207,50 @@ func TestClient_Do_withGzip(t *testing.T) {
 		require.EqualValues(t, gzipped, read)
 	})
 }
+
+func TestClient_Do_RequestCustomizer(t *testing.T) {
+	cases := []struct {
+		name        string
+		client      *Client
+		queryString string
+	}{
+		{
+			name:        "without request customizer",
+			client:      &Client{},
+			queryString: "",
+		},
+		{
+			name: "with request customizer",
+			client: &Client{
+				RequestCustomizer: func(r *http.Request) error {
+					r.URL.RawQuery = "foo=bar"
+					return nil
+				},
+			},
+			queryString: "foo=bar",
+		},
+	}
+
+	for _, tt := range cases {
+		t.Run(tt.name, func(t *testing.T) {
+			queryString := ""
+			dummyServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+				queryString = req.URL.Query().Encode()
+				w.Write([]byte("ok")) // nolint
+				w.WriteHeader(http.StatusOK)
+			}))
+			defer dummyServer.Close()
+
+			req, err := http.NewRequest(http.MethodGet, dummyServer.URL, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			_, err = tt.client.Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			require.Equal(t, tt.queryString, queryString)
+		})
+	}
+}
