@@ -38,6 +38,7 @@ var (
 	// DefaultTimeoutDuration デフォルトのタイムアウト
 	DefaultTimeoutDuration = 20 * time.Minute
 
+	// DefaultUserAgent デフォルトのユーザーエージェント
 	DefaultUserAgent = fmt.Sprintf(
 		"sacloud/go-http v%s (%s/%s; +https://github.com/sacloud/go-http)",
 		Version,
