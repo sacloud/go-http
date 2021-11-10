@@ -12,9 +12,9 @@ Use go get.
 
     go get github.com/sacloud/go-http
 
-Then import the `sacloud` package into your own code.
+Then import the `http` package into your own code.
 
-    import "github.com/sacloud/go-http"
+    import sacloudhttp "github.com/sacloud/go-http"
 
 ## License
 
