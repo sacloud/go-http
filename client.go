@@ -37,7 +37,7 @@ const (
 var (
 	// DefaultUserAgent デフォルトのユーザーエージェント
 	DefaultUserAgent = fmt.Sprintf(
-		"sacloud/go-http v%s (%s/%s; +https://github.com/sacloud/go-http)",
+		"go-http/v%s (%s/%s; +https://github.com/sacloud/go-http)",
 		Version,
 		runtime.GOOS,
 		runtime.GOARCH,
