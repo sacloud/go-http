@@ -1,5 +1,5 @@
 #
-# Copyright 2021 The sacloud/go-http authors
+# Copyright 2021-2022 The sacloud/go-http authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 AUTHOR          ?="The sacloud/go-http authors"
-COPYRIGHT_YEAR  ?="2021"
+COPYRIGHT_YEAR  ?="2021-2022"
 COPYRIGHT_FILES ?=$$(find . -name "*.go" -print | grep -v "/vendor/")
 
 default: gen fmt set-license goimports lint test

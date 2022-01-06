@@ -18,6 +18,6 @@ Then import the `http` package into your own code.
 
 ## License
 
-`go-http` Copyright (C) 2021 The sacloud/go-http authors.
+`go-http` Copyright (C) 2021-2022 The sacloud/go-http authors.
 
 This project is published under [Apache 2.0 License](LICENSE).
