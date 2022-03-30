@@ -101,49 +101,6 @@ func TestClient_Do_CheckRetryWithContext(t *testing.T) {
 	})
 }
 
-func TestClient_RetryByStatusCode(t *testing.T) {
-	cases := []struct {
-		responseCode int
-		shouldRetry  bool
-	}{
-		{responseCode: http.StatusOK, shouldRetry: false},
-		{responseCode: http.StatusCreated, shouldRetry: false},
-		{responseCode: http.StatusAccepted, shouldRetry: false},
-		{responseCode: http.StatusNoContent, shouldRetry: false},
-		{responseCode: http.StatusMovedPermanently, shouldRetry: false},
-		{responseCode: http.StatusFound, shouldRetry: false},
-		{responseCode: http.StatusBadRequest, shouldRetry: false},
-		{responseCode: http.StatusUnauthorized, shouldRetry: false},
-		{responseCode: http.StatusForbidden, shouldRetry: false},
-		{responseCode: http.StatusNotFound, shouldRetry: false},
-		{responseCode: http.StatusLocked, shouldRetry: true}, // Locked: 423
-		{responseCode: http.StatusInternalServerError, shouldRetry: false},
-		{responseCode: http.StatusBadGateway, shouldRetry: false},
-		{responseCode: http.StatusServiceUnavailable, shouldRetry: true},
-		{responseCode: http.StatusGatewayTimeout, shouldRetry: false},
-	}
-
-	client := &Client{RetryMax: 1, RetryWaitMin: 10 * time.Millisecond, RetryWaitMax: 10 * time.Millisecond}
-
-	for _, tt := range cases {
-		h := &dummyHandler{
-			responseCode: tt.responseCode,
-		}
-		dummyServer := httptest.NewServer(h)
-
-		req, err := http.NewRequest(http.MethodGet, dummyServer.URL, nil)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		client.Do(req) // nolint
-		dummyServer.Close()
-
-		require.Equal(t, tt.shouldRetry, h.isRetried(),
-			"got unexpected retry status with status[%d]: expected:%t got:%t", tt.responseCode, tt.shouldRetry, h.isRetried())
-	}
-}
-
 func TestClient_Do_withGzip(t *testing.T) {
 	var buf bytes.Buffer
 	writer := gzip.NewWriter(&buf)

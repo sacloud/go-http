@@ -45,20 +45,6 @@ var (
 
 	// DefaultRetryWaitMax デフォルトのリトライ間隔(最大)
 	DefaultRetryWaitMax = 64 * time.Second
-
-	// DefaultCheckRetryFunc デフォルトのリトライ判定Func
-	DefaultCheckRetryFunc = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
-		if ctx.Err() != nil {
-			return false, ctx.Err()
-		}
-		if err != nil {
-			return retryablehttp.DefaultRetryPolicy(ctx, resp, err)
-		}
-		if resp.StatusCode == 0 || resp.StatusCode == http.StatusServiceUnavailable || resp.StatusCode == http.StatusLocked {
-			return true, nil
-		}
-		return false, nil
-	}
 )
 
 // Client さくらのクラウドAPI(secure.sakura.ad.jp)向けのHTTPクライアント
@@ -111,7 +97,7 @@ func (c *Client) init() {
 		c.AcceptLanguage = DefaultAcceptLanguage
 	}
 	if c.CheckRetryFunc == nil {
-		c.CheckRetryFunc = DefaultCheckRetryFunc
+		c.CheckRetryFunc = retryablehttp.DefaultRetryPolicy
 	}
 	if c.RetryMax == 0 {
 		c.RetryMax = DefaultRetryMax
