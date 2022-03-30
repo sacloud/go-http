@@ -15,4 +15,4 @@
 package http
 
 // Version バージョン
-const Version = "0.0.5"
+const Version = "0.1.0"
