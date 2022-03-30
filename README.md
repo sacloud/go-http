@@ -4,17 +4,17 @@
 [![Tests](https://github.com/sacloud/go-http/workflows/Tests/badge.svg)](https://github.com/sacloud/go-http/actions/workflows/tests.yaml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sacloud/go-http)](https://goreportcard.com/report/github.com/sacloud/go-http)
 
-HTTP client library for SAKURA cloud in Go
+さくらのクラウド向けHTTPクライアントライブラリ
 
-## Installation
+## 概要
 
-Use go get.
+さくらのクラウドの各種API(IaaS,ObjectStorage,PHYなど)で共通利用できるHTTPクライアント機能を提供します。
 
-    go get github.com/sacloud/go-http
+### 関連プロジェクト
 
-Then import the `http` package into your own code.
+- [sacloud/api-client-go](https://github.com/sacloud/api-client-go): sacloudプロダクト向けHTTP/APIクライアントライブラリ
+  sacloud/go-httpをラップし環境変数やUsacloud互換のプロファイルの処理などを提供します。
 
-    import sacloudhttp "github.com/sacloud/go-http"
 
 ## License
 

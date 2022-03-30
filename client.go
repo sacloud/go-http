@@ -19,19 +19,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"runtime"
 	"time"
 
 	"github.com/hashicorp/go-retryablehttp"
-)
-
-// TODO 後で別プロジェクトへ切り出す
-const (
-	// APIAccessTokenEnvKey APIアクセストークンの環境変数名
-	APIAccessTokenEnvKey = "SAKURACLOUD_ACCESS_TOKEN"
-	// APIAccessSecretEnvKey APIアクセスシークレットの環境変数名
-	APIAccessSecretEnvKey = "SAKURACLOUD_ACCESS_TOKEN_SECRET"
 )
 
 var (
@@ -50,7 +41,8 @@ var (
 	DefaultRetryMax = 10
 
 	// DefaultRetryWaitMin デフォルトのリトライ間隔(最小)
-	DefaultRetryWaitMin = 1 * time.Second
+	DefaultRetryWaitMin = 1 * time.Second // nolint
+
 	// DefaultRetryWaitMax デフォルトのリトライ間隔(最大)
 	DefaultRetryWaitMax = 64 * time.Second
 
@@ -109,19 +101,6 @@ func NewClient(token, secret string) *Client {
 		AccessTokenSecret: secret,
 	}
 	return c
-}
-
-// NewClientFromEnv 環境変数からAPIキーを取得してAPIクライアントを作成する
-func NewClientFromEnv() (*Client, error) {
-	token := os.Getenv(APIAccessTokenEnvKey)
-	if token == "" {
-		return nil, fmt.Errorf("environment variable %q is required", APIAccessTokenEnvKey)
-	}
-	secret := os.Getenv(APIAccessSecretEnvKey)
-	if secret == "" {
-		return nil, fmt.Errorf("environment variable %q is required", APIAccessSecretEnvKey)
-	}
-	return NewClient(token, secret), nil
 }
 
 func (c *Client) init() {
@@ -185,7 +164,6 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 		if err := c.RequestCustomizer(req); err != nil {
 			return nil, err
 		}
-
 	}
 
 	request, err := retryablehttp.FromRequest(req)
