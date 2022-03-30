@@ -29,11 +29,11 @@ testacc:
 
 .PHONY: tools
 tools:
-	go install golang.org/x/tools/cmd/goimports@latest
+	go install github.com/rinchsan/gosimports/cmd/gosimports@latest
 	go install golang.org/x/tools/cmd/stringer@latest
 	go install github.com/sacloud/addlicense@latest
 	go install github.com/client9/misspell/cmd/misspell@latest
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/v1.43.0/install.sh | sh -s -- -b $$(go env GOPATH)/bin v1.43.0
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/v1.44.2/install.sh | sh -s -- -b $$(go env GOPATH)/bin v1.44.2
 
 .PHONY: clean
 clean:
@@ -46,9 +46,10 @@ gen: _gen fmt goimports set-license
 _gen:
 	go generate ./...
 
-.PHONY: goimports
-goimports: fmt
-	goimports -l -w .
+.PHONY: goimports gosimports
+goimports: gosimports
+gosimports: fmt
+	gosimports -l -w .
 
 .PHONY: fmt
 fmt:
@@ -59,7 +60,11 @@ set-license:
 	@addlicense -c $(AUTHOR) -y $(COPYRIGHT_YEAR) $(COPYRIGHT_FILES)
 
 .PHONY: lint lint-go
-lint: lint-go
+lint: lint-go textlint
 
 lint-go:
 	golangci-lint run ./...
+
+.PHONY: textlint
+textlint:
+	@docker run --rm -v $$PWD:/work -w /work ghcr.io/sacloud/textlint-action:v0.0.1 .
