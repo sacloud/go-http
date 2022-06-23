@@ -137,7 +137,7 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 		req.Header.Add("X-Requested-With", "XMLHttpRequest")
 	}
 	if req.Header.Get("X-Sakura-Bigint-As-Int") == "" {
-		req.Header.Add("X-Sakura-Bigint-As-Int", "1") //Use BigInt on resource ids.
+		req.Header.Add("X-Sakura-Bigint-As-Int", "1") // Use BigInt on resource ids.
 	}
 	if req.Header.Get("User-Agent") == "" {
 		req.Header.Add("User-Agent", c.UserAgent)
