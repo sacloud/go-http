@@ -104,7 +104,7 @@ func TestClient_Do_CheckRetryWithContext(t *testing.T) {
 func TestClient_Do_withGzip(t *testing.T) {
 	var buf bytes.Buffer
 	writer := gzip.NewWriter(&buf)
-	io.WriteString(writer, "ok") // nolint - エラーは無視
+	io.WriteString(writer, "ok") // nolint //エラーは無視
 	writer.Close()
 	gzipped := buf.Bytes()
 
