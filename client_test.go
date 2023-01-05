@@ -1,4 +1,4 @@
-// Copyright 2021-2022 The sacloud/go-http authors
+// Copyright 2021-2023 The sacloud/go-http authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ func TestClient_Do_CheckRetryWithContext(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		client.Do(req) // nolint
+		client.Do(req) //nolint
 		require.False(t, h.isRetried(), "don't retry when context was canceled")
 	})
 
@@ -96,7 +96,7 @@ func TestClient_Do_CheckRetryWithContext(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		client.Do(req) // nolint
+		client.Do(req) //nolint
 		require.False(t, h.isRetried(), "don't retry when context exceeded deadline")
 	})
 }
@@ -104,14 +104,14 @@ func TestClient_Do_CheckRetryWithContext(t *testing.T) {
 func TestClient_Do_withGzip(t *testing.T) {
 	var buf bytes.Buffer
 	writer := gzip.NewWriter(&buf)
-	io.WriteString(writer, "ok") // nolint //エラーは無視
+	io.WriteString(writer, "ok") //nolint //エラーは無視
 	writer.Close()
 	gzipped := buf.Bytes()
 
 	dummyServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Encoding", "gzip")
-		w.Write(gzipped) // nolint
 		w.WriteHeader(http.StatusOK)
+		w.Write(gzipped) //nolint
 	}))
 	defer dummyServer.Close()
 
@@ -193,8 +193,8 @@ func TestClient_Do_RequestCustomizer(t *testing.T) {
 			queryString := ""
 			dummyServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 				queryString = req.URL.Query().Encode()
-				w.Write([]byte("ok")) // nolint
 				w.WriteHeader(http.StatusOK)
+				w.Write([]byte("ok")) //nolint
 			}))
 			defer dummyServer.Close()
 
