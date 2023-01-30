@@ -26,6 +26,8 @@ import (
 type TracingRoundTripper struct {
 	// Transport 親となるhttp.RoundTripper、nilの場合http.DefaultTransportが利用される
 	Transport http.RoundTripper
+	// OutputOnlyError trueの場合レスポンスのステータスコードが200番台の時はリクエスト/レスポンスのトレースを出力しない
+	OutputOnlyError bool
 }
 
 // RoundTrip http.RoundTripperの実装
@@ -34,16 +36,19 @@ func (r *TracingRoundTripper) RoundTrip(req *http.Request) (*http.Response, erro
 		r.Transport = http.DefaultTransport
 	}
 
+	res, err := r.Transport.RoundTrip(req)
+	if err != nil {
+		return nil, err
+	}
+
+	if r.OutputOnlyError && res.StatusCode < 300 {
+		return res, err
+	}
 	data, err := httputil.DumpRequest(req, true)
 	if err != nil {
 		return nil, err
 	}
 	log.Printf("[TRACE] \trequest: %s %s\n==============================\n%s\n============================\n", req.Method, req.URL.String(), string(data))
-
-	res, err := r.Transport.RoundTrip(req)
-	if err != nil {
-		return nil, err
-	}
 
 	data, err = httputil.DumpResponse(res, true)
 	if err != nil {
