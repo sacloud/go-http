@@ -1,6 +1,6 @@
 module github.com/sacloud/go-http
 
-go 1.19
+go 1.20
 
 require (
 	github.com/hashicorp/go-retryablehttp v0.7.2
