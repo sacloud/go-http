@@ -63,7 +63,7 @@ func TestTracingRoundTripper_OutputOnlyError(t *testing.T) {
 				OutputOnlyError: tt.fields.OutputOnlyError,
 			}
 			client := &http.Client{Transport: r}
-			req, err := http.NewRequest("GET", server.URL, nil)
+			req, err := http.NewRequest("POST", server.URL, bytes.NewBufferString("request body"))
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -77,7 +77,8 @@ func TestTracingRoundTripper_OutputOnlyError(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			require.Equal(t, tt.wantTraceLog, strings.Contains(logs.String(), "GET / HTTP/1.1"), "error log not found: request")
+			require.Equal(t, tt.wantTraceLog, strings.Contains(logs.String(), "POST / HTTP/1.1"), "error log not found: request")
+			require.Equal(t, tt.wantTraceLog, strings.Contains(logs.String(), "request body"), "error log not found: request body")
 			require.Equal(t, tt.wantTraceLog, strings.Contains(logs.String(), "HTTP/1.1 200 OK"), "error log not found: response")
 		})
 	}

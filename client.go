@@ -41,7 +41,7 @@ var (
 	DefaultRetryMax = 10
 
 	// DefaultRetryWaitMin デフォルトのリトライ間隔(最小)
-	DefaultRetryWaitMin = 1 * time.Second 
+	DefaultRetryWaitMin = 1 * time.Second
 
 	// DefaultRetryWaitMax デフォルトのリトライ間隔(最大)
 	DefaultRetryWaitMax = 64 * time.Second

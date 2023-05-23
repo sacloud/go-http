@@ -15,6 +15,8 @@
 package http
 
 import (
+	"bytes"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -36,6 +38,16 @@ func (r *TracingRoundTripper) RoundTrip(req *http.Request) (*http.Response, erro
 		r.Transport = http.DefaultTransport
 	}
 
+	var bodyBytes []byte
+	if req.Body != nil {
+		bb, err := io.ReadAll(req.Body)
+		if err != nil {
+			return nil, err
+		}
+		bodyBytes = bb
+		req.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+	}
+
 	res, err := r.Transport.RoundTrip(req)
 	if err != nil {
 		return nil, err
@@ -43,6 +55,10 @@ func (r *TracingRoundTripper) RoundTrip(req *http.Request) (*http.Response, erro
 
 	if r.OutputOnlyError && res.StatusCode < 300 {
 		return res, err
+	}
+
+	if req.Body != nil {
+		req.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 	}
 	data, err := httputil.DumpRequest(req, true)
 	if err != nil {
