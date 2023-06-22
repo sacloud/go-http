@@ -3,7 +3,7 @@ module github.com/sacloud/go-http
 go 1.20
 
 require (
-	github.com/hashicorp/go-retryablehttp v0.7.2
+	github.com/hashicorp/go-retryablehttp v0.7.4
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/ratelimit v0.2.0
 )
