@@ -18,6 +18,6 @@
 
 ## License
 
-`go-http` Copyright (C) 2021-2023 The sacloud/go-http authors.
+`go-http` Copyright (C) 2021-2025 The sacloud/go-http authors.
 
 This project is published under [Apache 2.0 License](LICENSE).
