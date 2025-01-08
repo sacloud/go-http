@@ -1,6 +1,6 @@
 #====================
 AUTHOR         ?= The sacloud/go-http authors
-COPYRIGHT_YEAR ?= 2021-2023
+COPYRIGHT_YEAR ?= 2021-2025
 
 include includes/go/common.mk
 #====================
