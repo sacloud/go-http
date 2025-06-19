@@ -1,9 +1,9 @@
 module github.com/sacloud/go-http
 
-go 1.21
+go 1.23
 
 require (
-	github.com/hashicorp/go-retryablehttp v0.7.7
+	github.com/hashicorp/go-retryablehttp v0.7.8
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/ratelimit v0.3.1
 )
