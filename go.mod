@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/hashicorp/go-retryablehttp v0.7.7
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	go.uber.org/ratelimit v0.3.1
 )
 
